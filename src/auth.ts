@@ -49,18 +49,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             },
         }),
 
-        Google ({
+        Google({
             clientId: process.env.AUTH_GOOGLE_ID,
             clientSecret: process.env.AUTH_GOOGLE_SECRET
         })
     ],
 
     callbacks: {
-        async signIn({user, account}){
-            if(account?.provider === "google"){
+        async signIn({ user, account }) {
+            if (account?.provider === "google") {
                 await connectDb()
-                const dbUser = await User.findOne({email: user.email})
-                if(!dbUser){
+                const dbUser = await User.findOne({ email: user.email })
+                if (!dbUser) {
                     await User.create({
                         name: user.name,
                         email: user.email
@@ -86,9 +86,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         async session({ token, session }) {
             if (session.user) {
                 session.user.name = token.name,
-                session.user.id = token.id as string,
-                session.user.email = token.email as string,
-                session.user.role = token.role as string
+                    session.user.id = token.id as string,
+                    session.user.email = token.email as string,
+                    session.user.role = token.role as string
             }
 
             return session
@@ -102,7 +102,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
     session: {
         strategy: "jwt",
-        maxAge: 10*24*60*60
+        maxAge: 10 * 24 * 60 * 60
     },
 
     secret: process.env.AUTH_SECRET
