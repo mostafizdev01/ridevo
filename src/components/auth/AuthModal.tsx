@@ -1,13 +1,17 @@
+"use client"
 
+import {motion} from "motion/react"
 
 type propType = {
-    open: boolean,
-    onClose: ()=>void
+  open: boolean,
+  onClose: () => void
 }
 
-const AuthModal = ({open, onClose}:propType) => {
+const AuthModal = ({ open, onClose }: propType) => {
   return (
-    <div>AuthModal</div>
+    <>
+
+    </>
   )
 }
 
