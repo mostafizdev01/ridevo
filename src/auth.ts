@@ -28,7 +28,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 }
 
                 await connectDb()
-                const user = await User.findOne(credentials.email)
+                const user = await User.findOne({ email: credentials.email })
 
                 if (!user) {
                     throw Error("user does't exist!")
@@ -75,11 +75,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
 
         async jwt({ token, user }) {
-            token.name = user.name,
+            console.log("jwt callback", user)
+            if (user) {
+                token.name = user.name,
                 token.id = user.id,
                 token.email = user.email,
                 token.role = user.role
-
+            }
             return token
         },
 

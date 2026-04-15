@@ -7,6 +7,7 @@ import google from "../../../public/images/google.png"
 import { use, useState } from "react"
 import axios from "axios"
 import { useRouter } from "next/navigation"
+import { signIn, useSession } from "next-auth/react"
 
 type propType = {
   open: boolean,
@@ -24,8 +25,11 @@ const AuthModal = ({ open, onClose }: propType) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
-
   const router = useRouter();
+
+  const {data: session} = useSession()
+
+  console.log("session", session);
 
 
   const handleSignup = async () => {
@@ -67,6 +71,17 @@ const AuthModal = ({ open, onClose }: propType) => {
       setLoading(false)
     }
   }
+
+  const handleLogin = async () => {
+    setLoading(true)
+    const res = await signIn("credentials", {
+      email, password, redirect: false
+    })
+    setLoading(false)
+    console.log(res);
+    
+  }
+
 
   return (
     <AnimatePresence>
@@ -133,8 +148,8 @@ const AuthModal = ({ open, onClose }: propType) => {
                               value={password}
                               className=" w-full bg-transparent outline-none text-sm" />
                           </div>
-                          <button className='w-full cursor-pointer h-11 mt-3 rounded-xl bg-black text-white flex items-center justify-center gap-3 text-sm font-semibold hover:bg-gray-900 transition'>
-                            Login
+                          <button onClick={handleLogin} className='w-full cursor-pointer h-11 mt-3 rounded-xl bg-black text-white flex items-center justify-center gap-3 text-sm font-semibold hover:bg-gray-900 transition'>
+                            {loading ? <CircleDashed color="white" size={20} className=" animate-spin" /> : "Login"}
                           </button>
                           <div className=" text-center text-sm text-gray-500">
                             Don't have an account? <span className=" text-black cursor-pointer hover:underline" onClick={() => setStep("signup")}>Sign up</span>
