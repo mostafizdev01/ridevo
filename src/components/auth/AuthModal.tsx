@@ -4,8 +4,9 @@ import { CircleDashed, Lock, Mail, User, X } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
 import Image from "next/image"
 import google from "../../../public/images/google.png"
-import { useState } from "react"
+import { use, useState } from "react"
 import axios from "axios"
+import { useRouter } from "next/navigation"
 
 type propType = {
   open: boolean,
@@ -21,14 +22,44 @@ const AuthModal = ({ open, onClose }: propType) => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
+  const [success, setSuccess] = useState("")
+
+  const router = useRouter();
+
 
   const handleSignup = async () => {
     setLoading(true)
+    if(!name || !email || !password){
+      setError("All fields are required")
+      setLoading(false)
+      return;
+    }
     try {
+      if(password.length < 6){
+        setError("Password must be at least 6 characters long")
+        setLoading(false)
+        return;
+      }else{
+        setError("")
+        setSuccess("")
+      }
       const {data} = await axios.post("/api/auth/register", {
       name, email, password
     })
-    console.log(data);
+    if(data?.success){
+      setSuccess(data?.message || "Registration successful")
+      setError("")
+      setName("")
+      setEmail("")
+      setPassword("")
+      // router.push("/dashboard") // Redirect to dashboard page after successful registration
+    }
+    if(!data?.success){
+      setError(data?.message || "An error occurred")
+      setSuccess("")
+      
+    }
     setLoading(false)
     } catch (error) {
       console.error(error)
@@ -131,7 +162,7 @@ const AuthModal = ({ open, onClose }: propType) => {
                           </div>
                           <div className=" flex items-center gap-3 border border-black/20 rounded-xl px-4 py-3">
                             <Mail size={18} className=" text-gray-500" />
-                            <input type="email" placeholder="Email"
+                            <input type="email" required={true} placeholder="Email"
                               onChange={(e)=>setEmail(e.target.value)}
                               value={email}
                               className=" w-full bg-transparent outline-none text-sm" />
@@ -143,6 +174,8 @@ const AuthModal = ({ open, onClose }: propType) => {
                               value={password}
                               className=" w-full bg-transparent outline-none text-sm" />
                           </div>
+                          {error && <p className=" text-red-500 text-sm bg-red-100 p-2 rounded-lg text-left">{error}</p>}
+                          {success && <p className=" text-green-500 text-sm bg-green-100 p-2 rounded-lg text-left">{success}</p>}
                           <button disabled={loading} onClick={handleSignup} className='w-full cursor-pointer h-11 mt-3 rounded-xl bg-black text-white flex items-center justify-center gap-3 text-sm font-semibold hover:bg-gray-900 transition'>
                             {loading ? <CircleDashed color="white" size={20} className=" animate-spin" /> : "Sign up"}
                           </button>
