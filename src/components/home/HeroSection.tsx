@@ -2,7 +2,7 @@
 import { motion } from "motion/react"
 import {Bus, Car, Motorbike, Truck} from "lucide-react"
 
-function HeroSection() {
+function HeroSection({onAuthRequired}: {onAuthRequired: () => void}) {
   return (
     <div className='relative min-h-screen w-full overflow-hidden'>
       
@@ -55,6 +55,7 @@ function HeroSection() {
         // transition={{delay: 0.5}}
         whileHover={{scale: 1.05}}
         whileTap={{scale: 1.0}}
+        onClick={onAuthRequired}
         className=" mt-12 px-10 py-4 bg-white text-black rounded-full font-semibold shadow-xl cursor-pointer"
         >
           Book Now
