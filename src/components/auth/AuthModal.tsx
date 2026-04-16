@@ -26,47 +26,67 @@ const AuthModal = ({ open, onClose }: propType) => {
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
   const router = useRouter();
+  const [otp, setOtp] = useState(["", "", "", "", "", ""])
 
-  const {data: session} = useSession();
+  const { data: session } = useSession();
   console.log(session);
 
-// register new user
+  // register new user
   const handleSignup = async () => {
     setLoading(true)
-    if(!name || !email || !password){
+    if (!name || !email || !password) {
       setError("All fields are required")
       setLoading(false)
       return;
     }
     try {
-      if(password.length < 6){
+      if (password.length < 6) {
         setError("Password must be at least 6 characters long")
         setLoading(false)
         return;
-      }else{
+      } else {
         setError("")
         setSuccess("")
       }
-      const {data} = await axios.post("/api/auth/register", {
-      name, email, password
-    })
-    if(data?.success){
-      setSuccess(data?.message || "Registration successful")
-      setError("")
-      setName("")
-      setEmail("")
-      setPassword("")
-      // router.push("/dashboard") // Redirect to dashboard page after successful registration
-    }
-    if(!data?.success){
-      setError(data?.message || "An error occurred")
-      setSuccess("")
-      
-    }
-    setLoading(false)
+      const { data } = await axios.post("/api/auth/register", {
+        name, email, password
+      })
+      setStep("otp")
+      if (data?.success) {
+        setSuccess(data?.message || "Registration successful")
+        setError("")
+        setName("")
+        setEmail("")
+        setPassword("")
+        // router.push("/dashboard") // Redirect to dashboard page after successful registration
+      }
+      if (!data?.success) {
+        setError(data?.message || "An error occurred")
+        setSuccess("")
+
+      }
+      setLoading(false)
     } catch (error) {
       console.error(error)
     } finally {
+      setLoading(false)
+    }
+  }
+
+  // otp verification handler
+  const handleVerifyEmail = async () => {
+    try {
+      setLoading(true)
+
+      const { data } = await axios.post("/api/auth/verify-email", {
+        email, otp: otp.join("")
+      })
+      console.log(data);
+      setStep("login")
+      setLoading(false)
+
+    } catch (error) {
+      console.error(error)
       setLoading(false)
     }
   }
@@ -79,17 +99,37 @@ const AuthModal = ({ open, onClose }: propType) => {
     })
     setLoading(false)
     console.log(res);
-    
+
   }
 
   // Google login handler
   const handleGoogleLogin = async () => {
     setLoading(true)
-   const res = await signIn("google")
-   console.log(res);
+    const res = await signIn("google")
+    console.log(res);
     setLoading(false)
     // router.push(res.url || "/dashboard")
   }
+
+  // handle otp change
+  const handleOtpChange = (index: number, value: string) => {
+    if (/^\d*$/.test(value)) { // Only allow numeric input
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
+
+      if (value && index < otp.length - 1) {
+        const nextInput = document.getElementById(`otp-${index + 1}`);
+        nextInput?.focus();
+      }
+
+      if (!value && index > 0) {
+        const prevInput = document.getElementById(`otp-${index - 1}`);
+        prevInput?.focus();
+      }
+    }
+  };
+
 
   return (
     <AnimatePresence>
@@ -145,14 +185,14 @@ const AuthModal = ({ open, onClose }: propType) => {
                           <div className=" flex items-center gap-3 border border-black/20 rounded-xl px-4 py-3">
                             <Mail size={18} className=" text-gray-500" />
                             <input type="email" placeholder="Email"
-                            onChange={(e)=>setEmail(e.target.value)}
-                            value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                              value={email}
                               className=" w-full bg-transparent outline-none text-sm" />
                           </div>
                           <div className=" flex items-center gap-3 border border-black/20 rounded-xl px-4 py-3">
                             <Lock size={18} className=" text-gray-500" />
                             <input type="password" placeholder="Password"
-                              onChange={(e)=>setPassword(e.target.value)}
+                              onChange={(e) => setPassword(e.target.value)}
                               value={password}
                               className=" w-full bg-transparent outline-none text-sm" />
                           </div>
@@ -179,21 +219,21 @@ const AuthModal = ({ open, onClose }: propType) => {
                           <div className=" flex items-center gap-3 border border-black/20 rounded-xl px-4 py-3">
                             <User size={18} className=" text-gray-500" />
                             <input type="text" placeholder="Full Name"
-                              onChange={(e)=>setName(e.target.value)}
+                              onChange={(e) => setName(e.target.value)}
                               value={name}
                               className=" w-full bg-transparent outline-none text-sm" />
                           </div>
                           <div className=" flex items-center gap-3 border border-black/20 rounded-xl px-4 py-3">
                             <Mail size={18} className=" text-gray-500" />
                             <input type="email" required={true} placeholder="Email"
-                              onChange={(e)=>setEmail(e.target.value)}
+                              onChange={(e) => setEmail(e.target.value)}
                               value={email}
                               className=" w-full bg-transparent outline-none text-sm" />
                           </div>
                           <div className=" flex items-center gap-3 border border-black/20 rounded-xl px-4 py-3">
                             <Lock size={18} className=" text-gray-500" />
                             <input type="password" placeholder="Password"
-                              onChange={(e)=>setPassword(e.target.value)}
+                              onChange={(e) => setPassword(e.target.value)}
                               value={password}
                               className=" w-full bg-transparent outline-none text-sm" />
                           </div>
@@ -204,6 +244,42 @@ const AuthModal = ({ open, onClose }: propType) => {
                           </button>
                           <div className=" text-center text-sm text-gray-500">
                             Already have an account? <span className=" text-black cursor-pointer hover:underline" onClick={() => setStep("login")}>Login</span>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {/* otp section or modal  */}
+
+                    {step == "otp" && (
+                      <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                      >
+                        <h1 className='text-xl font-semibold'>Verify your email</h1>
+                        <p className=" text-gray-500 text-sm mt-2">
+                          We've sent a 6-digit code to your email address.
+                        </p>
+                        <div className=" mt-5 space-y-4">
+                          <div className=" flex items-center justify-between gap-3">
+                            {otp.map((digit, index) => (
+                              <input
+                                key={index}
+                                id={`otp-${index}`}
+                                type="text"
+                                maxLength={1}
+                                value={digit}
+                                onChange={(e) => handleOtpChange(index, e.target.value)}
+                                className=" w-12 h-12 border border-black/20 rounded-lg text-center text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              />
+                            ))}
+                          </div>
+                          <button disabled={loading} onClick={handleVerifyEmail} className='w-full cursor-pointer h-11 mt-3 rounded-xl bg-black text-white flex items-center justify-center gap-3 text-sm font-semibold hover:bg-gray-900 transition'>
+                            {loading ? <CircleDashed color="white" size={20} className=" animate-spin" /> : "Verify"}
+                          </button>
+                          <div className=" text-center text-sm text-gray-500">
+                            Didn't receive the code? <span className=" text-black cursor-pointer hover:underline" onClick={() => setStep("login")}>Resend</span>
                           </div>
                         </div>
                       </motion.div>
