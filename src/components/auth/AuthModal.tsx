@@ -27,11 +27,10 @@ const AuthModal = ({ open, onClose }: propType) => {
   const [success, setSuccess] = useState("")
   const router = useRouter();
 
-  const {data: session} = useSession()
+  const {data: session} = useSession();
+  console.log(session);
 
-  console.log("session", session);
-
-
+// register new user
   const handleSignup = async () => {
     setLoading(true)
     if(!name || !email || !password){
@@ -72,6 +71,7 @@ const AuthModal = ({ open, onClose }: propType) => {
     }
   }
 
+  // login existing user
   const handleLogin = async () => {
     setLoading(true)
     const res = await signIn("credentials", {
@@ -82,6 +82,14 @@ const AuthModal = ({ open, onClose }: propType) => {
     
   }
 
+  // Google login handler
+  const handleGoogleLogin = async () => {
+    setLoading(true)
+   const res = await signIn("google")
+   console.log(res);
+    setLoading(false)
+    // router.push(res.url || "/dashboard")
+  }
 
   return (
     <AnimatePresence>
@@ -112,7 +120,7 @@ const AuthModal = ({ open, onClose }: propType) => {
                   </p>
 
                   {/* google login button */}
-                  <button className='w-full cursor-pointer h-11 mt-3 rounded-xl border border-black/20 flex items-center justify-center gap-3 text-sm font-semibold hover:bg-black hover:text-white transition'>
+                  <button onClick={handleGoogleLogin} className='w-full cursor-pointer h-11 mt-3 rounded-xl border border-black/20 flex items-center justify-center gap-3 text-sm font-semibold hover:bg-black hover:text-white transition'>
                     <Image src={google} alt='Google' width={20} height={20} />
                     Continue with Google
                   </button>
