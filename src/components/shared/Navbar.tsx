@@ -1,18 +1,24 @@
 "use client";
 
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import logo from "../../../public/images/logo.png";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 import AuthModal from "../auth/AuthModal";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/redux/store";
+import { Bike, Car, ChevronRight, Truck } from "lucide-react";
+
 
 const navItems = ["Home", "Booking", "About Us", "Contact Us"];
 
 function Nav() {
   const [authOpen, setAuthOpen] = useState(false)
   const pathName = usePathname();
+  const { userData } = useSelector((state: RootState) => state.user);
+  const [profileOpen, setProfileOpen] = useState(false);
   return (
     <>
       <motion.div
@@ -50,9 +56,57 @@ function Nav() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button> */}
-          <button onClick={() => setAuthOpen(true)} className="hidden md:block bg-white text-black px-4 py-1.5 cursor-pointer rounded-full hover:bg-gray-200 transition duration-300">
-            Login
-          </button>
+          <div className=" flex items-center gap-3 relative">
+            <div className=" hidden md:block relative">
+              {!userData ? (
+                <button onClick={() => setAuthOpen(true)} className="hidden md:block bg-white text-black px-4 py-1.5 cursor-pointer rounded-full hover:bg-gray-200 transition duration-300">
+                  Login
+                </button>
+              )
+                :
+                (
+                  <>
+                    <button onClick={() => setProfileOpen(p => !p)} className=" w-11 h-11 rounded-full bg-white text-black font-bold flex items-center justify-center cursor-pointer">
+                      {userData?.name?.charAt(0).toUpperCase()}
+                    </button>
+
+                    <AnimatePresence>
+                      {profileOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2"
+                        >
+                          <div className="p-5">
+                            <p className="font-semibold text-lg text-gray-500">{userData.name}</p>
+
+                            <p className="text-xs uppercase text-gray-500 mb-4">
+                              {userData.role}
+                            </p>
+
+                            {userData.role !== "partner" && (
+                              <div className="w-full flex items-center gap-3 py-3 text-gray-500 hover:bg-gray-100 rounded-xl">
+                               <div className=" flex -space-x-2">
+                                <div className=" w-6 h-6 rounded-full bg-black text-white flex items-center"><Bike size={16} /></div>
+                                <div className=" w-6 h-6 rounded-full bg-black text-white flex items-center"><Car size={16} /></div>
+                                <div className=" w-6 h-6 rounded-full bg-black text-white flex items-center"><Truck size={16} /></div>
+                               </div>
+                                Become a Partner
+                                <ChevronRight size={16} />
+                              </div>
+                            )}
+                          </div>
+                        </motion.div>
+                      )}
+
+                    </AnimatePresence>
+                  </>
+                )
+              }
+            </div>
+          </div>
+
         </div>
 
       </motion.div>
