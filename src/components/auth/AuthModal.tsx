@@ -137,6 +137,7 @@ const AuthModal = ({ open, onClose }: propType) => {
         email, otp: otp.join("")
       })
       console.log(data);
+      setOtp(["", "", "", "", "", ""])
       setStep("login")
       setLoading(false)
 
