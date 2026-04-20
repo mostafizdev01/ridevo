@@ -28,21 +28,26 @@ const AuthModal = ({ open, onClose }: propType) => {
   const router = useRouter();
   const [otp, setOtp] = useState(["", "", "", "", "", ""])
 
-  const { data: session } = useSession();
-  console.log(session);
+
+  const { data } = useSession();
+  console.log(data);
 
   // register new user
   const handleSignup = async () => {
     setLoading(true)
-    if (!name || !email || !password) {
-      setError("All fields are required")
-      setLoading(false)
-      return;
-    }
     try {
+
+      if (!name || !email || !password) {
+        setError("All fields are required")
+        setSuccess("")
+        setLoading(false)
+        return;
+      }
+
       if (password.length < 6) {
         setError("Password must be at least 6 characters long")
         setLoading(false)
+        setSuccess("")
         return;
       } else {
         setError("")
@@ -51,12 +56,23 @@ const AuthModal = ({ open, onClose }: propType) => {
       const { data } = await axios.post("/api/auth/register", {
         name, email, password
       })
-      setStep("otp")
+
+      console.log("data", data);
+      console.log("data", data?.data?.isEmailVerified);
+      // if(data?.data?.isEmailVerified){
+      //   setStep("login")
+      //   return;
+      // }
+
+      if(data && data?.data?.isEmailVerified == false){
+        setStep("otp")
+      }
+
       if (data?.success) {
         setSuccess(data?.message || "Registration successful")
         setError("")
         setName("")
-        setEmail("")
+        // setEmail("")
         setPassword("")
         // router.push("/dashboard") // Redirect to dashboard page after successful registration
       }
@@ -73,24 +89,6 @@ const AuthModal = ({ open, onClose }: propType) => {
     }
   }
 
-  // otp verification handler
-  const handleVerifyEmail = async () => {
-    try {
-      setLoading(true)
-
-      const { data } = await axios.post("/api/auth/verify-email", {
-        email, otp: otp.join("")
-      })
-      console.log(data);
-      setStep("login")
-      setLoading(false)
-
-    } catch (error) {
-      console.error(error)
-      setLoading(false)
-    }
-  }
-
   // login existing user
   const handleLogin = async () => {
     setLoading(true)
@@ -98,7 +96,7 @@ const AuthModal = ({ open, onClose }: propType) => {
       email, password, redirect: false
     })
     setLoading(false)
-    console.log(res);
+    // console.log(res);
 
   }
 
@@ -129,6 +127,25 @@ const AuthModal = ({ open, onClose }: propType) => {
       }
     }
   };
+
+  // otp verification handler
+  const handleVerifyEmail = async () => {
+    try {
+      setLoading(true)
+
+      const { data } = await axios.post("/api/auth/verify-email", {
+        email, otp: otp.join("")
+      })
+      console.log(data);
+      setStep("login")
+      setLoading(false)
+
+    } catch (error) {
+      console.error(error)
+      setLoading(false)
+    }
+  }
+
 
 
   return (
@@ -275,6 +292,7 @@ const AuthModal = ({ open, onClose }: propType) => {
                               />
                             ))}
                           </div>
+                          {error && <p className=" text-red-500 text-sm bg-red-100 p-2 rounded-lg text-left">{error}</p>}
                           <button disabled={loading} onClick={handleVerifyEmail} className='w-full cursor-pointer h-11 mt-3 rounded-xl bg-black text-white flex items-center justify-center gap-3 text-sm font-semibold hover:bg-gray-900 transition'>
                             {loading ? <CircleDashed color="white" size={20} className=" animate-spin" /> : "Verify"}
                           </button>

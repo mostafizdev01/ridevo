@@ -10,7 +10,7 @@ export const POST = async (req: NextRequest) => {
         await connectDb();
         let user = await User.findOne({ email })
 
-        if (user && user.isEmailVerified) {
+        if (user) {
             return NextResponse.json({
                 success: false,
                 message: "Email already exist!",
