@@ -101,7 +101,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         error: "/signin"
     },
 
-    session: {
+    session: { /// create valid session time
         strategy: "jwt",
         maxAge: 10 * 24 * 60 * 60
     },

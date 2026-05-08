@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import { sendMail } from "@/src/server/lib/sendMail";
 
+
+// POST /api/auth/register ====>> register user
 export const POST = async (req: NextRequest) => {
     try {
         const { name, email, password } = await req.json()

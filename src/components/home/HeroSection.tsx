@@ -1,20 +1,22 @@
 "use client"
 import { motion } from "motion/react"
-import {Bus, Car, Motorbike, Truck} from "lucide-react"
+import { Bus, Car, Motorbike, Truck } from "lucide-react"
+import Image from "next/image";
+import heroImage from "../../../public/images/heroImage.jpg"
 
-function HeroSection({onAuthRequired}: {onAuthRequired: () => void}) {
+function HeroSection({ onAuthRequired }: { onAuthRequired: () => void }) {
   return (
     <div className='relative min-h-screen w-full overflow-hidden'>
-      
+
       <div
-        className='absolute inset-0 bg-cover bg-center'
-        style={{ backgroundImage: "url('/public/images/heroImage.png')" }}
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url('/images/heroImage.jpg')" }}
       />
 
       <div className='absolute inset-0 bg-black/80' />
 
       <div className='relative z-10 min-h-screen flex flex-col items-center justify-center px-4 text-center'>
-        
+
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -25,8 +27,8 @@ function HeroSection({onAuthRequired}: {onAuthRequired: () => void}) {
         </motion.div>
 
         <motion.p
-          initial={{ opacity: 0,}}
-          animate={{ opacity: 1,}}
+          initial={{ opacity: 0, }}
+          animate={{ opacity: 1, }}
           transition={{ delay: 0.6 }}
           className='mt-4 max-w-xl text-gray-300'
         >
@@ -34,10 +36,10 @@ function HeroSection({onAuthRequired}: {onAuthRequired: () => void}) {
         </motion.p>
 
         <motion.div
-        initial={{opacity: 0}}
-        animate={{opacity: 1}}
-        transition={{delay: 0.3}}
-        className="mt-8 flex gap-8 text-gray-300"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="mt-8 flex gap-8 text-gray-300"
         >
           <Motorbike size={30} />
           <Car size={30} />
@@ -49,14 +51,14 @@ function HeroSection({onAuthRequired}: {onAuthRequired: () => void}) {
           <p className=" text-4xl">🚚</p> */}
         </motion.div>
 
-        <motion.button 
-        // initial={{opacity: 0}}
-        // animate={{opacity: 1}}
-        // transition={{delay: 0.5}}
-        whileHover={{scale: 1.05}}
-        whileTap={{scale: 1.0}}
-        onClick={onAuthRequired}
-        className=" mt-12 px-10 py-4 bg-white text-black rounded-full font-semibold shadow-xl cursor-pointer"
+        <motion.button
+          // initial={{opacity: 0}}
+          // animate={{opacity: 1}}
+          // transition={{delay: 0.5}}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 1.0 }}
+          onClick={onAuthRequired}
+          className=" mt-12 px-10 py-4 bg-white text-black rounded-full font-semibold shadow-xl cursor-pointer"
         >
           Book Now
         </motion.button>
