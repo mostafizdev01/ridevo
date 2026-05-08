@@ -7,9 +7,11 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 import AuthModal from "../auth/AuthModal";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/src/redux/store";
-import { Bike, Car, ChevronRight, Truck } from "lucide-react";
+import { Bike, Car, ChevronRight, LogOut, Truck } from "lucide-react";
+import { signOut } from "next-auth/react";
+import { setUserData } from "@/src/redux/userSlice";
 
 
 const navItems = ["Home", "Booking", "About Us", "Contact Us"];
@@ -19,6 +21,15 @@ function Nav() {
   const pathName = usePathname();
   const { userData } = useSelector((state: RootState) => state.user);
   const [profileOpen, setProfileOpen] = useState(false);
+
+  const dispatch = useDispatch();
+  /// handle logout function
+  const handleLogout = async () => {
+    await signOut({redirect: false});
+    dispatch(setUserData(null));
+    setProfileOpen(false);
+  }
+
   return (
     <>
       <motion.div
@@ -96,6 +107,9 @@ function Nav() {
                                 <ChevronRight size={16} />
                               </div>
                             )}
+                            <button onClick={handleLogout} className="w-full flex justify-center items-center gap-3 cursor-pointer bg-black text-white py-2 rounded-md hover:bg-gray-800 transition duration-300">
+                              <span>Logout</span> <LogOut size={16} className=" inline" />
+                            </button>
                           </div>
                         </motion.div>
                       )}

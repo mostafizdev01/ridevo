@@ -30,7 +30,7 @@ const AuthModal = ({ open, onClose }: propType) => {
 
 
   const { data } = useSession();
-  console.log(data);
+  console.log("session data", data);
 
   // register new user
   const handleSignup = async () => {
@@ -218,7 +218,7 @@ const AuthModal = ({ open, onClose }: propType) => {
                             {loading ? <CircleDashed color="white" size={20} className=" animate-spin" /> : "Login"}
                           </button>
                           <div className=" text-center text-sm text-gray-500">
-                            Don't have an account? <span className=" text-black cursor-pointer hover:underline" onClick={() => setStep("signup")}>Sign up</span>
+                            Don&apos;t have an account? <span className=" text-black cursor-pointer hover:underline" onClick={() => setStep("signup")}>Sign up</span>
                           </div>
 
                         </div>
@@ -277,7 +277,7 @@ const AuthModal = ({ open, onClose }: propType) => {
                       >
                         <h1 className='text-xl font-semibold'>Verify your email</h1>
                         <p className=" text-gray-500 text-sm mt-2">
-                          We've sent a 6-digit code to your email address.
+                          We&apos;ve sent a 6-digit code to your email address.
                         </p>
                         <div className=" mt-5 space-y-4">
                           <div className=" flex items-center justify-between gap-3">
@@ -298,7 +298,7 @@ const AuthModal = ({ open, onClose }: propType) => {
                             {loading ? <CircleDashed color="white" size={20} className=" animate-spin" /> : "Verify"}
                           </button>
                           <div className=" text-center text-sm text-gray-500">
-                            Didn't receive the code? <span className=" text-black cursor-pointer hover:underline" onClick={() => setStep("login")}>Resend</span>
+                            Didn&apos;t receive the code? <span className=" text-black cursor-pointer hover:underline" onClick={() => setStep("login")}>Resend</span>
                           </div>
                         </div>
                       </motion.div>

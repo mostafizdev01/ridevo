@@ -49,7 +49,7 @@ function HeroSection({ onAuthRequired }: { onAuthRequired: () => void }) {
           <p className=" text-4xl">🚗</p>
           <p className=" text-4xl">🚎</p>
           <p className=" text-4xl">🚚</p> */}
-        </motion.div>
+        </motion.div>   
 
         <motion.button
           // initial={{opacity: 0}}
