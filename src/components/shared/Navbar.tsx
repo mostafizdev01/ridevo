@@ -9,7 +9,7 @@ import { useState } from "react";
 import AuthModal from "../auth/AuthModal";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/src/redux/store";
-import { Bike, Car, ChevronRight, LogOut, Truck } from "lucide-react";
+import { Bike, Car, ChevronRight, LogOut, Menu, Truck, X } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { setUserData } from "@/src/redux/userSlice";
 
@@ -21,11 +21,12 @@ function Nav() {
   const pathName = usePathname();
   const { userData } = useSelector((state: RootState) => state.user);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [showbar, setShowbar] = useState(false);
 
   const dispatch = useDispatch();
   /// handle logout function
   const handleLogout = async () => {
-    await signOut({redirect: false});
+    await signOut({ redirect: false });
     dispatch(setUserData(null));
     setProfileOpen(false);
   }
@@ -37,7 +38,7 @@ function Nav() {
         animate={{ y: 0, opacity: 1 }}
         className={`fixed top-3 left-1/2 -translate-x-1/2 w-[94%] md:w-[86%] z-50 rounded-full bg-[#0B0B0B] text-white shadow-[0_15px_50px_rgba(0,0,0,0.7)] py-4 px-2`}
       >
-        <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between">
+        <div className=" mx-auto px-8 flex items-center justify-between">
           <Image
             src={logo}
             alt="logo"
@@ -62,17 +63,26 @@ function Nav() {
               })
             }
           </div>
+
+
           {/* <button className="md:hidden text-white hover:text-gray-300 transition duration-300">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
-        </button> */}
+         </button> */}
           <div className=" flex items-center gap-3 relative">
-            <div className=" hidden md:block relative">
+            <div className=" w-full relative">
               {!userData ? (
-                <button onClick={() => setAuthOpen(true)} className="hidden md:block bg-white text-black px-4 py-1.5 cursor-pointer rounded-full hover:bg-gray-200 transition duration-300">
-                  Login
-                </button>
+                <div>
+                  <button onClick={() => setAuthOpen(true)} className="hidden md:block bg-white text-black px-4 py-1.5 cursor-pointer rounded-full hover:bg-gray-200 transition duration-300">
+                    Login
+                  </button>
+
+                  {/* /// mobile menu */}
+                  <div className=" md:hidden text-white hover:text-gray-300 transition duration-300 cursor-pointer">
+                    {showbar ? <X onClick={() => setShowbar(false)} /> : <Menu onClick={() => setShowbar(true)} />}
+                  </div>
+                </div>
               )
                 :
                 (
@@ -98,11 +108,11 @@ function Nav() {
 
                             {userData.role !== "partner" && (
                               <div className="w-full flex items-center gap-3 py-3 text-gray-500 hover:bg-gray-100 rounded-xl">
-                               <div className=" flex -space-x-2">
-                                <div className=" w-6 h-6 rounded-full bg-black text-white flex items-center"><Bike size={16} /></div>
-                                <div className=" w-6 h-6 rounded-full bg-black text-white flex items-center"><Car size={16} /></div>
-                                <div className=" w-6 h-6 rounded-full bg-black text-white flex items-center"><Truck size={16} /></div>
-                               </div>
+                                <div className=" flex -space-x-2">
+                                  <div className=" w-6 h-6 rounded-full bg-black text-white flex items-center"><Bike size={16} /></div>
+                                  <div className=" w-6 h-6 rounded-full bg-black text-white flex items-center"><Car size={16} /></div>
+                                  <div className=" w-6 h-6 rounded-full bg-black text-white flex items-center"><Truck size={16} /></div>
+                                </div>
                                 Become a Partner
                                 <ChevronRight size={16} />
                               </div>

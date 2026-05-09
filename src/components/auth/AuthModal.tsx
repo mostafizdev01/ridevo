@@ -96,7 +96,7 @@ const AuthModal = ({ open, onClose }: propType) => {
       email, password, redirect: false
     })
     setLoading(false)
-    // console.log(res);
+    console.log("login res", res);
 
   }
 
@@ -137,8 +137,19 @@ const AuthModal = ({ open, onClose }: propType) => {
         email, otp: otp.join("")
       })
       console.log(data);
+      if (data?.success) {
+        setSuccess(data?.message || "Email verified successfully")
+        setError("")
+      }
+        if (!data?.success) {
+          setError(data?.message || "An error occurred")
+          setOtp(["", "", "", "", "", ""])
+          setLoading(false)
+          setSuccess("")
+          return;
+        }
       setOtp(["", "", "", "", "", ""])
-      setStep("login")
+      setTimeout(()=> setStep("login"), 2000)
       setLoading(false)
 
     } catch (error) {
@@ -294,6 +305,7 @@ const AuthModal = ({ open, onClose }: propType) => {
                             ))}
                           </div>
                           {error && <p className=" text-red-500 text-sm bg-red-100 p-2 rounded-lg text-left">{error}</p>}
+                          {success && <p className=" text-green-500 text-sm bg-green-100 p-2 rounded-lg text-left">{success}</p>}
                           <button disabled={loading} onClick={handleVerifyEmail} className='w-full cursor-pointer h-11 mt-3 rounded-xl bg-black text-white flex items-center justify-center gap-3 text-sm font-semibold hover:bg-gray-900 transition'>
                             {loading ? <CircleDashed color="white" size={20} className=" animate-spin" /> : "Verify"}
                           </button>
