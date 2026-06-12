@@ -4,8 +4,8 @@ import { motion } from 'motion/react'
 import { useState } from 'react';
 
 const VEHICLE_CATEGORIES = [
-  { title: 'Cars', description: 'Browse the full fleet..', Icon: Car, tag: "Premium" },
   { title: 'Bikes', description: 'Fast and affordable rides.', Icon: Bike, tag: "Premium" },
+  { title: 'Cars', description: 'Browse the full fleet..', Icon: Car, tag: "Premium" },
   { title: 'Vans', description: 'Comfortable city travel.', Icon: Bus, tag: "Family" },
   { title: 'Trucks', description: 'Find the perfect truck for your needs, whether it’s for work or play, with our selection of powerful and reliable trucks.', Icon: Truck, tag: "Cargo" },
 

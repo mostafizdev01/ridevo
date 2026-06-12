@@ -10,7 +10,7 @@ import AuthModal from "../auth/AuthModal";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/src/redux/store";
 import { Bike, Car, ChevronRight, LogOut, Menu, Truck, X } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { setUserData } from "@/src/redux/userSlice";
 
 
@@ -19,9 +19,15 @@ const navItems = ["Home", "Booking", "About Us", "Contact Us"];
 function Nav() {
   const [authOpen, setAuthOpen] = useState(false)
   const pathName = usePathname();
-  const { userData } = useSelector((state: RootState) => state.user);
+  // const { userData } = useSelector((state: RootState) => state.user);
   const [profileOpen, setProfileOpen] = useState(false);
   const [showbar, setShowbar] = useState(false);
+
+  const { data } = useSession();
+
+  const userData = data?.user;
+
+  console.log("userData", userData)
 
   const dispatch = useDispatch();
   /// handle logout function

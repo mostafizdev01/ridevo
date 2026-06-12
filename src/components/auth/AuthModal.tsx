@@ -4,7 +4,7 @@ import { CircleDashed, Lock, Mail, User, X } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
 import Image from "next/image"
 import google from "../../../public/images/google.png"
-import { use, useState } from "react"
+import { useState } from "react"
 import axios from "axios"
 import { useRouter } from "next/navigation"
 import { signIn, useSession } from "next-auth/react"
@@ -25,12 +25,12 @@ const AuthModal = ({ open, onClose }: propType) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
-  const router = useRouter();
+  // const router = useRouter();
   const [otp, setOtp] = useState(["", "", "", "", "", ""])
 
 
-  const { data } = useSession();
-  console.log("session data", data);
+  // const { data } = useSession();
+  // console.log("session data", data);
 
   // register new user
   const handleSignup = async () => {
@@ -225,8 +225,8 @@ const AuthModal = ({ open, onClose }: propType) => {
                               value={password}
                               className=" w-full bg-transparent outline-none text-sm" />
                           </div>
-                          <button onClick={handleLogin} className='w-full cursor-pointer h-11 mt-3 rounded-xl bg-black text-white flex items-center justify-center gap-3 text-sm font-semibold hover:bg-gray-900 transition'>
-                            {loading ? <CircleDashed color="white" size={20} className=" animate-spin" /> : "Login"}
+                          <button disabled={loading} onClick={handleLogin} className='w-full cursor-pointer h-11 mt-3 rounded-xl bg-black text-white flex items-center justify-center gap-3 text-sm font-semibold hover:bg-gray-900 transition'>
+                            {loading ? <><span className=" text-slate-400">Logging in...</span><CircleDashed color="gray" fontStyle="bold" size={20} className=" animate-spin" /></> : "Login"}
                           </button>
                           <div className=" text-center text-sm text-gray-500">
                             Don&apos;t have an account? <span className=" text-black cursor-pointer hover:underline" onClick={() => setStep("signup")}>Sign up</span>
@@ -269,7 +269,7 @@ const AuthModal = ({ open, onClose }: propType) => {
                           {error && <p className=" text-red-500 text-sm bg-red-100 p-2 rounded-lg text-left">{error}</p>}
                           {success && <p className=" text-green-500 text-sm bg-green-100 p-2 rounded-lg text-left">{success}</p>}
                           <button disabled={loading} onClick={handleSignup} className='w-full cursor-pointer h-11 mt-3 rounded-xl bg-black text-white flex items-center justify-center gap-3 text-sm font-semibold hover:bg-gray-900 transition'>
-                            {loading ? <CircleDashed color="white" size={20} className=" animate-spin" /> : "Sign up"}
+                            {loading ? <><span className=" text-slate-400">Creating account...</span><CircleDashed color="gray" size={20} className=" animate-spin" /></> : "Sign up"}
                           </button>
                           <div className=" text-center text-sm text-gray-500">
                             Already have an account? <span className=" text-black cursor-pointer hover:underline" onClick={() => setStep("login")}>Login</span>

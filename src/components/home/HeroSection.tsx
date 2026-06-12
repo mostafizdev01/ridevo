@@ -8,10 +8,20 @@ function HeroSection({ onAuthRequired }: { onAuthRequired: () => void }) {
   return (
     <div className='relative min-h-screen w-full overflow-hidden'>
 
-      <div
+      {/* <div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: "url('/images/heroImage.jpg')" }}
-      />
+      /> */}
+
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
+      >
+        <source src="/images/hero-video.mp4" type="video/mp4" />
+      </video>
 
       <div className='absolute inset-0 bg-black/80' />
 
@@ -49,7 +59,7 @@ function HeroSection({ onAuthRequired }: { onAuthRequired: () => void }) {
           <p className=" text-4xl">🚗</p>
           <p className=" text-4xl">🚎</p>
           <p className=" text-4xl">🚚</p> */}
-        </motion.div>   
+        </motion.div>
 
         <motion.button
           // initial={{opacity: 0}}
