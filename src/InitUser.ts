@@ -6,7 +6,7 @@ import useGetMe from "./hooks/useGetMe";
 function InitUser () {
 
     const {status} = useSession();
-    console.log("status", status)
+    // console.log("status", status)
 
     useGetMe({ enabled: status == "authenticated" });
     return null
