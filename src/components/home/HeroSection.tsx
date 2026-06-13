@@ -23,7 +23,7 @@ function HeroSection({ onAuthRequired }: { onAuthRequired: () => void }) {
         <source src="/images/hero-video.mp4" type="video/mp4" />
       </video>
 
-      <div className='absolute inset-0 bg-black/80' />
+      <div className='absolute inset-0 bg-black/60' />
 
       <div className='relative z-10 min-h-screen flex flex-col items-center justify-center px-4 text-center'>
 
@@ -33,7 +33,7 @@ function HeroSection({ onAuthRequired }: { onAuthRequired: () => void }) {
           transition={{ duration: 0.6 }}
           className='text-white font-extrabold text-4xl sm:text-5xl md:text-7xl'
         >
-          Book Any Vehicle
+          Book Your Vehicle
         </motion.div>
 
         <motion.p

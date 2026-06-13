@@ -20,7 +20,7 @@ function Nav() {
   const pathName = usePathname();
   // const { userData } = useSelector((state: RootState) => state.user);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [showbar, setShowbar] = useState(true);
+  const [showbar, setShowbar] = useState(false);
 
   const { data } = useSession();
 
