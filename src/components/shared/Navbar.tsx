@@ -237,7 +237,7 @@ function Nav() {
                         <Truck size={16} />
                       </div>
                     </div>
-                    Become a Partner
+                    <div className=" w-full">Become a Partner</div>
                     <ChevronRight size={16} />
                   </div>
                 )}
