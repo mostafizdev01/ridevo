@@ -3,12 +3,11 @@
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import logo from "../../../public/images/logo.png";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 import AuthModal from "../auth/AuthModal";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/src/redux/store";
+import { useDispatch } from "react-redux";
 import { Bike, Car, ChevronRight, LogOut, Menu, Truck, X } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { setUserData } from "@/src/redux/userSlice";
@@ -21,6 +20,8 @@ function Nav() {
   // const { userData } = useSelector((state: RootState) => state.user);
   const [profileOpen, setProfileOpen] = useState(false);
   const [showbar, setShowbar] = useState(false);
+
+  const router = useRouter();
 
   const { data } = useSession();
 
@@ -95,7 +96,7 @@ function Nav() {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
-                        className="  hidden md:block absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2"
+                        className="  hidden md:block absolute right-0 mt-2 w-68 bg-white shadow-lg rounded-md py-2"
                       >
                         <div className="p-5">
                           <p className="font-semibold text-lg text-gray-500">
@@ -107,7 +108,7 @@ function Nav() {
                           </p>
 
                           {userData.role !== "partner" && (
-                            <div className="w-full flex items-center gap-3 py-3 text-gray-500 hover:bg-gray-100 rounded-xl">
+                            <div onClick={()=> router.push("/partner/onboarding/vehicle")} className="w-full flex items-center mb-2 gap-3 py-3 cursor-pointer text-gray-500 hover:bg-gray-100 rounded-xl">
                               <div className=" flex -space-x-2">
                                 <div className=" w-6 h-6 rounded-full bg-black text-white flex items-center">
                                   <Bike size={16} />
@@ -224,7 +225,7 @@ function Nav() {
                   {userData.role}
                 </p>
 
-                {userData.role !== "partner" && (
+                {userData?.role !== "partner" && (
                   <div className="w-full flex items-center gap-3 py-3 text-gray-500 hover:bg-gray-100 rounded-xl">
                     <div className=" flex -space-x-2">
                       <div className=" w-6 h-6 rounded-full bg-black text-white flex items-center">
@@ -238,7 +239,9 @@ function Nav() {
                       </div>
                     </div>
                     <div className=" w-full">Become a Partner</div>
-                    <ChevronRight size={16} />
+                    <div className=" flex items-center justify-center">
+                      <ChevronRight size={46} />
+                    </div>
                   </div>
                 )}
                 <button

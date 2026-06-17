@@ -38,6 +38,9 @@ export async function proxy(req:NextRequest){
     }
 
     if(pathname.startsWith("/partner") && role !== "partner"){
+        if(pathname.startsWith("/partner/onboarding/vehicle")){
+            return NextResponse.next();
+        }
         return NextResponse.redirect(new URL("/", req.nextUrl));
     }
 
