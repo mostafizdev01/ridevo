@@ -1,5 +1,4 @@
 import {
-  Bike,
   Bus,
   Car,
   CarFront,
@@ -7,13 +6,14 @@ import {
   ChevronRight,
   Helicopter,
   Motorbike,
+  Scooter,
   Sparkles,
   Truck,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { useRef, useState } from "react";
 
-const VEHICLE_CATEGORIES = [
+export const VEHICLE_CATEGORIES = [
   {
     title: "Bikes",
     description: "Fast and affordable rides.",
@@ -54,7 +54,7 @@ const VEHICLE_CATEGORIES = [
   {
     title: "Cycles",
     description: "Feel the thrill of the open road.",
-    Icon: Bike,
+    Icon: Scooter,
     tag: "Adventure",
   },
 ];
