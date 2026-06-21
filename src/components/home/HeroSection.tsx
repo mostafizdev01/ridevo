@@ -1,8 +1,8 @@
 "use client"
 import { motion } from "motion/react"
 import { Bus, Car, Motorbike, Truck } from "lucide-react"
-import Image from "next/image";
-import heroImage from "../../../public/images/heroImage.jpg"
+// import Image from "next/image";
+// import heroImage from "../../../public/images/heroImage.jpg"
 
 function HeroSection({ onAuthRequired }: { onAuthRequired: () => void }) {
   return (

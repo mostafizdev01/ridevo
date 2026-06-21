@@ -41,6 +41,12 @@ export async function proxy(req:NextRequest){
         if(pathname.startsWith("/partner/onboarding/vehicle")){
             return NextResponse.next();
         }
+        if(pathname.startsWith("/partner/onboarding/documents")){
+            return NextResponse.next();
+        }
+        if(pathname.startsWith("/partner/onboarding/bank")){
+            return NextResponse.next();
+        }
         return NextResponse.redirect(new URL("/", req.nextUrl));
     }
 

@@ -49,7 +49,7 @@ const Vehicle = () => {
                   whileHover={{scale: 1.05}}
                   whileTap={{scale: 0.95}}
                   onClick={()=> setVehicleType(v?.title)}
-                  className={`rounded-2xl border p-4 flex flex-col items-center gap-2 transition
+                  className={`rounded-2xl cursor-pointer border p-4 flex flex-col items-center gap-2 transition
                     ${active 
                       ? "bg-black text-white border-black" 
                       : " border-gray-200 hover:border-black"}
@@ -118,6 +118,7 @@ const Vehicle = () => {
         </div>
 
         <motion.button
+        onClick={()=> router.push("/partner/onboarding/documents")}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.97 }}
           className="mt-8 w-full h-14 rounded-2xl bg-black text-white font-semibold flex items-center
