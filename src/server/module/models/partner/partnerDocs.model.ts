@@ -5,9 +5,9 @@ import { IPartner } from "./partner.interface";
 const partnerSchema = new mongoose.Schema<IPartner>(
   {
     owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    url: { type: String, required: true },
-    rcUrl: { type: String, required: true },
-    licenseNumber: { type: String, required: true },
+    nationalId: { type: String, required: true },
+    license: { type: String, required: true },
+    rc: { type: String, required: true },
     status: { type: String, enum: ["approved", "pending", "rejected"], default: "pending" },
   },
   { timestamps: true }
