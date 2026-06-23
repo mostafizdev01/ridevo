@@ -1,5 +1,6 @@
 "use client";
 import { VEHICLE_CATEGORIES } from "@/src/components/home/VehicleSlider";
+import axios from "axios";
 import { ArrowLeft } from "lucide-react";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
@@ -10,6 +11,23 @@ const Vehicle = () => {
   const [vehicleType, setVehicleType] = useState("")
   const [vehicleNumber, setVehicleNumber] = useState("")
   const [vehicleModel, setVehicleModel] = useState("")
+
+  
+  const handleVehicleSubmit = async ()=>  {
+    
+    try {
+      
+      const {data} = await axios.post("/api/partner/onboarding/vehicle",{
+        type: vehicleType, number:vehicleNumber, vehicleModel
+      })
+
+      console.log("vehicle submited data: ", data)
+      
+    } catch (error) {
+      console.log("Vehicle data submited error")
+    }
+
+  }
   
   return (
     <div className=" min-h-screen bg-slate-200 flex items-center justify-center px-4">
@@ -45,7 +63,7 @@ const Vehicle = () => {
                 const active = vehicleType==v.title
                 return (
                   <motion.div
-                  key={v.title}
+                  key={i}
                   whileHover={{scale: 1.05}}
                   whileTap={{scale: 0.95}}
                   onClick={()=> setVehicleType(v?.title)}
@@ -118,7 +136,7 @@ const Vehicle = () => {
         </div>
 
         <motion.button
-        onClick={()=> router.push("/partner/onboarding/documents")}
+        onClick={handleVehicleSubmit}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.97 }}
           className="mt-8 w-full h-14 rounded-2xl bg-black text-white font-semibold flex items-center

@@ -35,6 +35,10 @@ export async function POST(req: Request) {
     /// get data in request data
     const {type, number, vehicleModel} = await req.json();
 
+    console.log("type: ", type)
+    console.log("number: ", number)
+    console.log("vehicleModel: ", vehicleModel)
+
     if(!type || !number || !vehicleModel){
               return Response.json(
         { message: "missing Required details" },
@@ -43,12 +47,12 @@ export async function POST(req: Request) {
     }
 
     // validation regex with number
-    if(!VEHICLE_REGEX.test(number)){
-        return Response.json({
-            message: "Invalid Vehicle Number Format",
-            status: 400
-        })
-    }
+    // if(!VEHICLE_REGEX.test(number)){
+    //     return Response.json({
+    //         message: "Invalid Vehicle Number Format",
+    //         status: 400
+    //     })
+    // }
 
     const vehicleNumber = number.toUpperCase();
     const duplicate = await Vehicle.findOne({number: vehicleNumber})
@@ -75,6 +79,8 @@ export async function POST(req: Request) {
         number: vehicleNumber,
         vehicleModel
     })
+
+    console.log("vehicle data: ", vehicle)
 
     if(user.partnerOnBoardingSteps < 1){
         user.partnerOnBoardingSteps = 1
