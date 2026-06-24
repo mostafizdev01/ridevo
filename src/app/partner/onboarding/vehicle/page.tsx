@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { VEHICLE_CATEGORIES } from "@/src/components/home/VehicleSlider";
 import axios from "axios";
@@ -12,9 +13,12 @@ const Vehicle = () => {
   const [vehicleNumber, setVehicleNumber] = useState("")
   const [vehicleModel, setVehicleModel] = useState("")
   const [loading, setLoading] = useState(false);
+  const [error, setError]  =useState("")
 
+  console.log("error: ", error)
   
   const handleVehicleSubmit = async ()=>  {
+    setError("")
     setLoading(true)
     try {
       
@@ -22,11 +26,20 @@ const Vehicle = () => {
         type: vehicleType, number:vehicleNumber, vehicleModel
       })
 
-      console.log("vehicle submited data: ", data)
-      setLoading(false)
+      console.log("data: ", data)
+      if(data.success){
+        setLoading(false)
+        router.push("/partner/onboarding/documents")
+      }
+
+      if(!data?.success){
+        setError(data?.message)
+        setLoading(false)
+      }
       
-    } catch (error) {
+    } catch (error: any) {
       setLoading(false)
+      setError(error?.response?.data?.message ?? "Something went wrong!")
       console.log("Vehicle data submited error", error)
     }
 
@@ -106,6 +119,7 @@ const Vehicle = () => {
             >
              Vehicle Number
             </label>
+            
             <input
               type="text"
               onChange={(e)=> setVehicleNumber(e.target.value.toLocaleUpperCase().slice(0, 10))}
@@ -137,6 +151,8 @@ const Vehicle = () => {
             />
           </div>
         </div>
+
+        {error && <p className=" text-sm text-red-500 mt-5 p-1 bg-red-50 font-semibold rounded-md mb-3">{error}</p>}
 
         <motion.button
         disabled={loading}

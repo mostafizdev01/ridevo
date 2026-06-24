@@ -7,7 +7,7 @@ export interface IUser extends Document{
     role: "user" | "partner" | "admin";
     isEmailVerified?: boolean;
     mobileNumber: string;
-    partnerOnboardingStep?: string;
+    partnerOnBoardingSteps: 1 | 2 | 3;
     otp?: string;
     otpExpiresAt?: Date;
     createdAt: Date;
@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema<IUser>({
     },
     mobileNumber: {
         type: String,
+    },
+    partnerOnBoardingSteps: {
+        type: Number,
+        default: 1
     },
     role: {
         type: String,

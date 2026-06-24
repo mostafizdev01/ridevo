@@ -25,6 +25,7 @@ export async function POST(req: Request) {
       email: session?.user?.email,
     });
 
+
     if (!user) {
       return Response.json(
         { message: "user not found" },
@@ -41,32 +42,33 @@ export async function POST(req: Request) {
 
     if(!type || !number || !vehicleModel){
               return Response.json(
-        { message: "missing Required details" },
+        { message: "Missing required details" },
         { status: 400 }
       );
     }
 
     // validation regex with number
-    // if(!VEHICLE_REGEX.test(number)){
-    //     return Response.json({
-    //         message: "Invalid Vehicle Number Format",
-    //         status: 400
-    //     })
-    // }
+    if(!VEHICLE_REGEX.test(number)){
+        return Response.json({
+            message: "Invalid vehicle number format",
+            status: 400
+        })
+    }
 
     const vehicleNumber = number.toUpperCase();
     const duplicate = await Vehicle.findOne({number: vehicleNumber})
 
     if(duplicate){
         return Response.json({
-            message: "Vehicle already registered",
+            success: false,
+            message: "Vehicle number already registered!",
             status: 400
         })
     }
 
     let vehicle = await Vehicle.findOne({owner: session?.user.id})
 
-    if(vehicle && vehicle == "number"){
+    if(vehicle && vehicle.number == "number"){
         vehicle.type = type
         vehicle.number = vehicleNumber
         vehicle.vehicleModel = vehicleModel
@@ -81,14 +83,14 @@ export async function POST(req: Request) {
         vehicleModel
     })
 
-    if(user.partnerOnBoardingSteps < 1){
+    if(user?.partnerOnBoardingSteps < 1 || user?.partnerOnBoardingSteps  == 1){
         user.partnerOnBoardingSteps = 1
     }
 
     user.role = "partner"
     await user.save();
 
-    return Response.json(vehicle, {status: 201})
+    return Response.json({data:vehicle, success: true}, {status: 201})
 
     } catch (error) {
         return Response.json({message: `vehicle error ${error}`},
