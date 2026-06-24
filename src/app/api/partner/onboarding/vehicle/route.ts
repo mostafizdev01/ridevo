@@ -66,7 +66,7 @@ export async function POST(req: Request) {
 
     let vehicle = await Vehicle.findOne({owner: session?.user.id})
 
-    if(vehicle){
+    if(vehicle && vehicle == "number"){
         vehicle.type = type
         vehicle.number = vehicleNumber
         vehicle.vehicleModel = vehicleModel
@@ -75,12 +75,11 @@ export async function POST(req: Request) {
     }
 
     vehicle = await Vehicle.create({
+      owner: user._id,
         type,
         number: vehicleNumber,
         vehicleModel
     })
-
-    console.log("vehicle data: ", vehicle)
 
     if(user.partnerOnBoardingSteps < 1){
         user.partnerOnBoardingSteps = 1

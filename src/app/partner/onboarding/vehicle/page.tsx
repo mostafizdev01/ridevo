@@ -1,7 +1,7 @@
 "use client";
 import { VEHICLE_CATEGORIES } from "@/src/components/home/VehicleSlider";
 import axios from "axios";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader } from "lucide-react";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -11,10 +11,11 @@ const Vehicle = () => {
   const [vehicleType, setVehicleType] = useState("")
   const [vehicleNumber, setVehicleNumber] = useState("")
   const [vehicleModel, setVehicleModel] = useState("")
+  const [loading, setLoading] = useState(false);
 
   
   const handleVehicleSubmit = async ()=>  {
-    
+    setLoading(true)
     try {
       
       const {data} = await axios.post("/api/partner/onboarding/vehicle",{
@@ -22,9 +23,11 @@ const Vehicle = () => {
       })
 
       console.log("vehicle submited data: ", data)
+      setLoading(false)
       
     } catch (error) {
-      console.log("Vehicle data submited error")
+      setLoading(false)
+      console.log("Vehicle data submited error", error)
     }
 
   }
@@ -58,7 +61,7 @@ const Vehicle = () => {
             <p className=" text-xs font-semibold text-gray-500 mb-3">Vehicle Type</p>
           <div className=" flex flex-wrap justify-start items-center gap-3">
             {
-              VEHICLE_CATEGORIES.map((v, i)=>{
+              VEHICLE_CATEGORIES?.map((v, i)=>{
                 const Icon = v.Icon
                 const active = vehicleType==v.title
                 return (
@@ -105,7 +108,7 @@ const Vehicle = () => {
             </label>
             <input
               type="text"
-              onChange={(e)=> setVehicleNumber(e.target.value)}
+              onChange={(e)=> setVehicleNumber(e.target.value.toLocaleUpperCase().slice(0, 10))}
               value={vehicleNumber}
               placeholder="MH12AB1234"
               id="vn"
@@ -124,7 +127,7 @@ const Vehicle = () => {
             </label>
             <input
               type="text"
-              onChange={(e)=> setVehicleModel(e.target.value)}
+              onChange={(e)=> setVehicleModel(e.target.value.toLocaleUpperCase().slice(0, 10))}
               value={vehicleModel}
               placeholder="Tata Ace"
               id="vm"
@@ -136,13 +139,14 @@ const Vehicle = () => {
         </div>
 
         <motion.button
+        disabled={loading}
         onClick={handleVehicleSubmit}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.97 }}
           className="mt-8 w-full h-14 rounded-2xl bg-black text-white font-semibold flex items-center
       justify-center gap-2  disabled:opacity-40 transition cursor-pointer"
         >
-          Continue
+          {!loading ? "Continue" : (<div className=" flex justify-center items-center gap-3 text-gray-400"><span>Contining...</span><Loader className=" animate-spin" /></div>)}
         </motion.button>
       </motion.div>
     </div>

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-type VehicleType = "bike" | "car" | "truck" | "loading" | "auto";
+type VehicleType = "Bikes" | "Helicopters" | "Cars" | "Vans" | "Trucks" | "Electric" | "Cycles" | "loading" | "auto";
 
 
 export interface IVehicle {
@@ -9,8 +9,8 @@ export interface IVehicle {
   vehicleModel: string;
   number: string;
   image?: string;
-  pricePerKm: number;
-  waitingCharge: number;
+  pricePerKm?: number;
+  waitingCharge?: number;
   status: "approved" | "pending" | "rejected";
   rejectionReason?: string;
   isAction: boolean;
