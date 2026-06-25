@@ -1,14 +1,71 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
-import { ArrowLeft, FileCheck, UploadCloud } from "lucide-react";
+import axios from "axios";
+import { ArrowLeft, FileCheck, Loader, UploadCloud } from "lucide-react";
 import { motion } from "motion/react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+type docsType = "nationalId" | "license" | "rc";
 
 const page = () => {
   const router = useRouter();
-  //   const [vehicleType, setVehicleType] = useState("")
-  //   const [vehicleNumber, setVehicleNumber] = useState("")
-  //   const [vehicleModel, setVehicleModel] = useState("")
+  const [docs, setDocs] = useState<Record<docsType, File | null>>({
+    nationalId: null,
+    license: null,
+    rc: null,
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleDocs = async () => {
+    setLoading(true);
+    setError("")
+    try {
+      const formData = new FormData();
+
+      if (!docs.license || !docs.nationalId || !docs.rc) {
+        setLoading(false);
+        setError("All documents are required!");
+        return null;
+      }
+
+      formData.append("nationalId", docs.nationalId!);
+      formData.append("license", docs.license!);
+      formData.append("rc", docs.rc!);
+
+      const { data } = await axios.post(
+        "/api/partner/onboarding/documents",
+        formData,
+      );
+
+      if (data?.success) {
+        setLoading(false);
+        router.push("/partner/onboarding/bank");
+      }
+
+      if(!data.success){
+        setLoading(false)
+        setError(data.message)
+      }
+
+    } catch (error: any) {
+      setLoading(false);
+      setError(error?.response?.data?.message ?? "Something went wrong!")
+    }
+  };
+
+  // get image data
+
+  const handleImage = (doc: docsType, file: File | null) => {
+    if (!file) {
+      return;
+    }
+
+    setDocs((prev) => ({ ...prev, [doc]: file }));
+  };
 
   return (
     <div className=" min-h-screen bg-slate-200 flex items-center justify-center px-4">
@@ -52,9 +109,27 @@ const page = () => {
             <div>
               <span className=" text-xs text-gray-400">Upload</span>
               <div className=" w-10 h-10 rounded-full bg-black text-white flex items-center justify-center">
-                <UploadCloud size={18} />
+                {docs?.nationalId ? (
+                  <Image
+                    src={URL.createObjectURL(docs.nationalId)}
+                    width={100}
+                    height={100}
+                    alt="National ID"
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                ) : (
+                  <UploadCloud size={18} />
+                )}
               </div>
             </div>
+            <input
+              type="file"
+              hidden
+              accept="image/*, .pdf"
+              onChange={(e) =>
+                handleImage("nationalId", e.target?.files?.[0] || null)
+              }
+            />
           </motion.label>
 
           <motion.label
@@ -71,9 +146,27 @@ const page = () => {
             <div>
               <span className=" text-xs text-gray-400">Upload</span>
               <div className=" w-10 h-10 rounded-full bg-black text-white flex items-center justify-center">
-                <UploadCloud size={18} />
+                {docs?.license ? (
+                  <Image
+                    src={URL.createObjectURL(docs?.license)}
+                    width={100}
+                    height={100}
+                    alt="License"
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                ) : (
+                  <UploadCloud size={18} />
+                )}
               </div>
             </div>
+            <input
+              type="file"
+              hidden
+              accept="image/*, .pdf"
+              onChange={(e) =>
+                handleImage("license", e.target?.files?.[0] || null)
+              }
+            />
           </motion.label>
 
           <motion.label
@@ -88,9 +181,25 @@ const page = () => {
             <div>
               <span className=" text-xs text-gray-400">Upload</span>
               <div className=" w-10 h-10 rounded-full bg-black text-white flex items-center justify-center">
-                <UploadCloud size={18} />
+                {docs?.rc ? (
+                  <Image
+                    src={URL.createObjectURL(docs.rc)}
+                    width={100}
+                    height={100}
+                    alt="Registation certificate"
+                    className=" w-full h-full object-cover rounded-full"
+                  />
+                ) : (
+                  <UploadCloud size={18} />
+                )}
               </div>
             </div>
+            <input
+              type="file"
+              hidden
+              accept="image/*, .pdf"
+              onChange={(e) => handleImage("rc", e.target?.files?.[0] || null)}
+            />
           </motion.label>
         </div>
 
@@ -101,14 +210,28 @@ const page = () => {
           </p>
         </div>
 
+        {error && (
+          <p className=" text-sm text-red-500 mt-5 p-1 bg-red-50 font-semibold rounded-md mb-3">
+            {error}
+          </p>
+        )}
+
         <motion.button
-        onClick={()=> router.push("/partner/onboarding/bank")}
+          disabled={loading}
+          onClick={handleDocs}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.97 }}
           className="mt-8 w-full h-14 rounded-2xl bg-black text-white font-semibold flex items-center
       justify-center gap-2  disabled:opacity-40 transition cursor-pointer"
         >
-          Continue
+          {!loading ? (
+            "Continue"
+          ) : (
+            <div className=" flex justify-center items-center gap-3 text-gray-400">
+              <span>Continuing...</span>
+              <Loader className=" animate-spin" />
+            </div>
+          )}
         </motion.button>
       </motion.div>
     </div>

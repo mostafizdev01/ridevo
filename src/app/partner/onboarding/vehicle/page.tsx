@@ -14,8 +14,6 @@ const Vehicle = () => {
   const [vehicleModel, setVehicleModel] = useState("")
   const [loading, setLoading] = useState(false);
   const [error, setError]  =useState("")
-
-  console.log("error: ", error)
   
   const handleVehicleSubmit = async ()=>  {
     setError("")
@@ -162,7 +160,7 @@ const Vehicle = () => {
           className="mt-8 w-full h-14 rounded-2xl bg-black text-white font-semibold flex items-center
       justify-center gap-2  disabled:opacity-40 transition cursor-pointer"
         >
-          {!loading ? "Continue" : (<div className=" flex justify-center items-center gap-3 text-gray-400"><span>Contining...</span><Loader className=" animate-spin" /></div>)}
+          {!loading ? "Continue" : (<div className=" flex justify-center items-center gap-3 text-gray-400"><span>Continuing...</span><Loader className=" animate-spin" /></div>)}
         </motion.button>
       </motion.div>
     </div>

@@ -36,10 +36,6 @@ export async function POST(req: Request) {
     /// get data in request data
     const {type, number, vehicleModel} = await req.json();
 
-    console.log("type: ", type)
-    console.log("number: ", number)
-    console.log("vehicleModel: ", vehicleModel)
-
     if(!type || !number || !vehicleModel){
               return Response.json(
         { message: "Missing required details" },

@@ -13,7 +13,7 @@ export async function POST(req: Request) {
 
     if (!session || !session.user?.email) {
       return Response.json(
-        { message: "unauthorized" },
+        { success: false, message: "unauthorized" },
         { status: 400 }
       );
     }
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
 
     if (!user) {
       return Response.json(
-        { message: "user not found" },
+        { success: false, message: "user not found" },
         { status: 400 }
       );
     }
@@ -35,9 +35,11 @@ export async function POST(req: Request) {
     const license = formdata.get("license") as Blob | null
     const rc = formdata.get("rc") as Blob | null
 
+    
+
     if(!nationalId || !license || !rc){
          return Response.json(
-        { message: "All documents are required" },
+        { success: false, message: "All documents are required" },
         { status: 400 }
       );
     }
@@ -53,7 +55,7 @@ export async function POST(req: Request) {
         const url = await uploadOnCloudinary(nationalId)
         if(!url){
              return Response.json(
-        { message: "NationalID upload failed" },
+        {success: false, message: "NationalID upload failed" },
         { status: 400 }
          );
         }
@@ -65,7 +67,7 @@ export async function POST(req: Request) {
         const url = await uploadOnCloudinary(license)
         if(!url){
              return Response.json(
-        { message: "Licence upload failed" },
+        {success: false, message: "Licence upload failed" },
         { status: 400 }
          );
         }
@@ -77,7 +79,7 @@ export async function POST(req: Request) {
         const url = await uploadOnCloudinary(rc)
         if(!url){
              return Response.json(
-        { message: "Rc upload failed" },
+        { success: false, message: "Rc upload failed" },
         { status: 400 }
          );
         }
@@ -97,7 +99,7 @@ export async function POST(req: Request) {
 
     await user.save()
 
-    return Response.json(partnerDocs, {
+    return Response.json({success: true, data:partnerDocs}, {
         status: 201
     })
 

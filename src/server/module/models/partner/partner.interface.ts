@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 
-export interface IPartner {
+export interface IDocs {
   owner: mongoose.Types.ObjectId;
   nationalId: string;
   rc: string;
