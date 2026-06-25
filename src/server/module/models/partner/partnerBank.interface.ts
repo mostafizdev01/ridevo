@@ -3,10 +3,11 @@ import mongoose from "mongoose";
 
 export interface IPartnerBank {
   owner: mongoose.Types.ObjectId;
-  bankName: string;
+  bankName?: string;
   accountHolder: string;
   accountNumber: string;
-  ifscCode: string;
+  ifsc: string;
+  mobileNumber: number;
   upi?: string;
   status: "added" | "not_added" | "verified" | "rejected";
   createdAt: Date;

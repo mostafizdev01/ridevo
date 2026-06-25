@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { auth } from "@/src/auth";
 import connectDb from "@/src/server/lib/db";
-import { PartnerBank } from "@/src/server/module/models/partner/partnerBank.model";
+import { Bank } from "@/src/server/module/models/partner/partnerBank.model";
 import { User } from "@/src/server/module/models/user/user.model";
 import { NextRequest } from "next/server";
 
@@ -32,18 +33,20 @@ export async function POST(req:Request){
 
     const {accountHolder,accountNumber, upi, ifsc, mobileNumber} = await req.json()
 
-    if(!accountHolder || !accountNumber || !upi || !ifsc || !mobileNumber){
+    if(!accountHolder || !accountNumber || !ifsc || !mobileNumber){
         return Response.json({
+          success: false,
           message: "All fields are required!",
           status: 400
         })
     }
 
-    const partnerBank = await PartnerBank.findOneAndUpdate({owner: user._id},
+    const partnerBank = await Bank.findOneAndUpdate({owner: user._id},
         {
             accountHolder,
             accountNumber,
             ifsc,
+            mobileNumber,
             upi,
             status: "added"
         },
@@ -58,7 +61,7 @@ export async function POST(req:Request){
 
     user.save()
 
-    return Response.json(partnerBank, {
+    return Response.json({success: true, data:partnerBank}, {
         status: 201
     })
 
@@ -97,7 +100,7 @@ export async function GET(req: NextRequest){
       );
     }
 
-    const partnerBank = await PartnerBank.findOne({owner: user._id})
+    const partnerBank = await Bank.findOne({owner: user._id})
 
     if(partnerBank){
         return Response.json(partnerBank, {status: 200})

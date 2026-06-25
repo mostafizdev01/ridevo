@@ -1,21 +1,55 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
+import axios from "axios";
 import {
   ArrowLeft,
   BadgeCheck,
   CircleCheckBig,
   CreditCard,
   Landmark,
+  Loader,
   Phone,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 const page = () => {
   const router = useRouter();
-  //   const [vehicleType, setVehicleType] = useState("")
-  //   const [vehicleNumber, setVehicleNumber] = useState("")
-  //   const [vehicleModel, setVehicleModel] = useState("")
+    const [accountHolder, setAccountHolder] = useState("")
+    const [accountNumber, setAccountNumber] = useState("")
+    const [ifscCode, setIfscCode] = useState("")
+    const [mobile, setMobile] = useState("")
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState("")
+
+    const handleBank = async ()=> {
+      setLoading(true)
+      setError("")
+      try {
+        const {data} = await axios.post("/api/partner/onboarding/bank", {
+          accountHolder, accountNumber, ifsc:ifscCode, mobileNumber:mobile
+        })
+        
+        if(data.success){
+          setLoading(false)
+          toast.success("Request send successfully!")
+          router.push("/")
+        }
+
+        if(!data.success){
+          setLoading(false)
+          setError(data.message)
+        }
+
+      } catch (error:any) {
+        setLoading(false)
+        setError(error?.response.message)
+        console.log("Bank submition error: ", error)
+      }
+    }
 
   return (
     <div className=" min-h-screen bg-slate-200 flex items-center justify-center px-4">
@@ -59,6 +93,8 @@ const page = () => {
                 <BadgeCheck color="green" />
               </div>
               <input
+              onChange={(e)=>setAccountHolder(e.target.value.slice(0, 30))}
+              value={accountHolder}
                 type="text"
                 id="ahn"
                 placeholder="As per bank records"
@@ -68,6 +104,7 @@ const page = () => {
             </div>
           </div>
 
+          {/* account number */}
           <div>
             <label
               htmlFor="ahn"
@@ -80,7 +117,9 @@ const page = () => {
                 <CreditCard color="green" />
               </div>
               <input
-                type="text"
+              onChange={(e)=>setAccountNumber(e.target.value.slice(0, 16))}
+              value={accountNumber}
+                type="number"
                 id="ahn"
                 placeholder="Enter account number"
                 className=" flex-1 border-b pb-2
@@ -89,6 +128,7 @@ const page = () => {
             </div>
           </div>
 
+{/* account ifsc code */}
           <div>
             <label
               htmlFor="ahn"
@@ -101,6 +141,8 @@ const page = () => {
                 <Landmark color="green" />
               </div>
               <input
+              onChange={(e)=>setIfscCode(e.target.value.toUpperCase().slice(0, 10))}
+              value={ifscCode}
                 type="text"
                 id="ahn"
                 placeholder="HDFC0001234"
@@ -122,7 +164,9 @@ const page = () => {
                 <Phone color="green" />
               </div>
               <input
-                type="text"
+              onChange={(e)=>setMobile(e.target.value.slice(0, 15))}
+              value={mobile}
+                type="number"
                 id="ahn"
                 placeholder="10 digit mobile number"
                 className=" flex-1 border-b pb-2
@@ -157,14 +201,28 @@ const page = () => {
           </p>
         </div>
 
+        {error && (
+          <p className=" text-sm text-red-500 mt-5 p-1 bg-red-50 font-semibold rounded-md mb-3">
+            {error}
+          </p>
+        )}
+
         <motion.button
-          onClick={() => router.push("/partner/onboarding/bank")}
+        disabled={loading}
+          onClick={handleBank}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.97 }}
           className="mt-8 w-full h-14 rounded-2xl bg-black text-white font-semibold flex items-center
       justify-center gap-2  disabled:opacity-40 transition cursor-pointer"
         >
-          Finish
+           {!loading ? (
+            "Continue"
+          ) : (
+            <div className=" flex justify-center items-center gap-3 text-gray-400">
+              <span>Continuing...</span>
+              <Loader className=" animate-spin" />
+            </div>
+          )}
         </motion.button>
       </motion.div>
     </div>
