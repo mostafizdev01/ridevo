@@ -33,9 +33,9 @@ export async function proxy(req:NextRequest){
 
     const role = session.user?.role;
 
-    if(pathname.startsWith("/admin") && role !== "admin"){
-        return NextResponse.redirect(new URL("/", req.nextUrl));
-    }
+    // if(pathname.startsWith("/admin") && role !== "admin"){
+    //     return NextResponse.redirect(new URL("/", req.nextUrl));
+    // }
 
     if(pathname.startsWith("/partner") && role !== "partner"){
         if(pathname.startsWith("/partner/onboarding/vehicle")){

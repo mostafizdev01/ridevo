@@ -60,12 +60,8 @@ const page = () => {
   const validIfsc = IFSC_REGEX.test(ifscCode);
   const validMobileNumber = mobile.length == 12;
 
-  const validBankDeatails = {
-    validAccountHolder,
-    validBankNumber,
-    validIfsc,
-    validMobileNumber,
-  };
+  const validBankDeatails = validAccountHolder && validBankNumber && validIfsc && validMobileNumber;
+  
 
   return (
     <div className=" min-h-screen bg-slate-200 flex items-center justify-center px-4">
@@ -261,7 +257,7 @@ const page = () => {
         )}
 
         <motion.button
-          disabled={loading}
+          disabled={ !validBankDeatails || loading}
           onClick={handleBank}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.97 }}
