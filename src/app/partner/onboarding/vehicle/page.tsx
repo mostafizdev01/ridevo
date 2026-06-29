@@ -5,7 +5,7 @@ import axios from "axios";
 import { ArrowLeft, Loader } from "lucide-react";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Vehicle = () => {
   const router = useRouter();
@@ -15,6 +15,7 @@ const Vehicle = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError]  =useState("")
   
+  // post vehicle data
   const handleVehicleSubmit = async ()=>  {
     setError("")
     setLoading(true)
@@ -42,6 +43,24 @@ const Vehicle = () => {
     }
 
   }
+
+  // get vehicle data
+  useEffect(()=> {
+    const handleGetVehicle = async ()=> {
+      try {
+        const {data} = await axios.get("/api/partner/onboarding/vehicle")
+        if(data){
+          setVehicleType(data?.type)
+          setVehicleNumber(data?.number)
+          setVehicleModel(data?.vehicleModel)
+        }
+      } catch (error: any) {
+        console.log("error: ", error)
+      }
+    }
+    handleGetVehicle()
+  }, [])
+
   
   return (
     <div className=" min-h-screen bg-slate-200 flex items-center justify-center px-4">
