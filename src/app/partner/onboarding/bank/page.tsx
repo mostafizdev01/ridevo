@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const page = () => {
@@ -27,6 +27,7 @@ const page = () => {
 
   const IFSC_REGEX = /^[A-Z]{4}0[A-Z0-9]{6}$/;
 
+  /// post bank details
   const handleBank = async () => {
     setLoading(true);
     setError("");
@@ -54,6 +55,24 @@ const page = () => {
       console.log("Bank submition error: ", error);
     }
   };
+
+  // get bank details
+  useEffect(()=> {
+    const handleGetBank = async ()=> {
+      try {
+        const {data} = await axios.get("/api/partner/onboarding/bank")
+      if(data){
+        setAccountHolder(data?.accountHolder)
+        setAccountNumber(data?.accountNumber)
+        setIfscCode(data?.ifsc)
+        setMobile(data?.mobileNumber)
+      }
+      } catch (error) {
+        console.log("error: ", error)
+      }
+    }
+    handleGetBank()
+  }, [])
 
   const validAccountHolder = accountHolder.length >= 3;
   const validBankNumber = accountNumber.length == 16;
