@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { auth } from "@/src/auth";
 import uploadOnCloudinary from "@/src/server/lib/cloudinary";
@@ -114,6 +115,43 @@ export async function POST(req: Request) {
 // =======>>>>> Get partnerDoc info ===========>>>>>>>>>>>
 
 export async function GET(req:Request){
-    console.log("vehicle documents data: ", req.body);
+   try {
+           await connectDb();
+
+    const session = await auth();
+
+    if (!session || !session.user?.email) {
+      return Response.json(
+        { message: "unauthorized" },
+        { status: 400 }
+      );
+    }
+
+    const user = await User.findOne({
+      email: session?.user?.email,
+    });
+
+    if (!user) {
+      return Response.json(
+        { message: "user not found" },
+        { status: 400 }
+      );
+    }
+
+    let document = await Partner.findOne({
+        owner: user._id
+    })
+
+    if(document){
+        return Response.json(document, {status: 200})
+    }else{
+        return null
+    }
+
+    } catch (error) {
+         return Response.json({message: `vehicle error ${error}`},
+            {status: 500}
+        )
+    }
     
 }

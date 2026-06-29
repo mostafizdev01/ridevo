@@ -6,7 +6,7 @@ import { ArrowLeft, FileCheck, Loader, UploadCloud } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type docsType = "nationalId" | "license" | "rc";
 
@@ -19,7 +19,15 @@ const page = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [licenseUrl, setLicenseUrl] = useState("")
+  const [nationalIdUrl, setNationalIdUrl] = useState("")
+  const [rcUrl, setRcUrl] = useState("")
 
+  console.log("licenseUrl: ", licenseUrl)
+  console.log("nationalIdUrl: ", nationalIdUrl)
+  console.log("rcUrl: ", rcUrl)
+
+  // Post documents data
   const handleDocs = async () => {
     setLoading(true);
     setError("")
@@ -67,6 +75,28 @@ const page = () => {
     setDocs((prev) => ({ ...prev, [doc]: file }));
   };
 
+
+  /// Get vehicel data 
+
+    useEffect(()=> {
+      const handleGetDocuments = async ()=> {
+        try {
+          const {data} = await axios.get("/api/partner/onboarding/documents")
+          if(data){
+            setLicenseUrl(data?.license)
+            setNationalIdUrl(data?.nationalId)
+            setRcUrl(data?.rc)
+          }
+          
+        } catch (error: any) {
+          console.log("error: ", error)
+        }
+      }
+      handleGetDocuments() 
+    }, [])
+
+    const isCompleted = docs.license && docs.nationalId && docs.rc
+
   return (
     <div className=" min-h-screen bg-slate-200 flex items-center justify-center px-4">
       <motion.div
@@ -109,9 +139,9 @@ const page = () => {
             <div>
               <span className=" text-xs text-gray-400">Upload</span>
               <div className=" w-10 h-10 rounded-full bg-black text-white flex items-center justify-center">
-                {docs?.nationalId ? (
+                {docs?.nationalId || nationalIdUrl ? (
                   <Image
-                    src={URL.createObjectURL(docs.nationalId)}
+                    src={docs?.nationalId ? URL.createObjectURL(docs.nationalId) : nationalIdUrl}
                     width={100}
                     height={100}
                     alt="National ID"
@@ -146,9 +176,9 @@ const page = () => {
             <div>
               <span className=" text-xs text-gray-400">Upload</span>
               <div className=" w-10 h-10 rounded-full bg-black text-white flex items-center justify-center">
-                {docs?.license ? (
+                {docs?.license || licenseUrl ? (
                   <Image
-                    src={URL.createObjectURL(docs?.license)}
+                    src={docs.license ? URL.createObjectURL(docs?.license) : licenseUrl}
                     width={100}
                     height={100}
                     alt="License"
@@ -181,9 +211,9 @@ const page = () => {
             <div>
               <span className=" text-xs text-gray-400">Upload</span>
               <div className=" w-10 h-10 rounded-full bg-black text-white flex items-center justify-center">
-                {docs?.rc ? (
+                {docs?.rc || rcUrl ? (
                   <Image
-                    src={URL.createObjectURL(docs.rc)}
+                    src={docs.rc ? URL.createObjectURL(docs.rc) : rcUrl}
                     width={100}
                     height={100}
                     alt="Registation certificate"
@@ -217,7 +247,7 @@ const page = () => {
         )}
 
         <motion.button
-          disabled={loading}
+          disabled={ !isCompleted || loading}
           onClick={handleDocs}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.97 }}
