@@ -10,7 +10,6 @@ export default async function Home() {
   const session  = await auth();
 
   const user = session?.user;
-  
 
   return (
     <div className=" min-h-screen flex flex-col">
